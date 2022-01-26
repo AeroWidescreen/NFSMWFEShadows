@@ -20,3 +20,4 @@
 *.sarif
 *.recipe
 *.pchast
+*.json

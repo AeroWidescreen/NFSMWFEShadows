@@ -17,18 +17,20 @@ void Init()
 	// Main
 	RenderWorldShadows = iniReader.ReadInteger("MAIN", "RenderWorldShadows", 1);
 	RenderCarShadows = iniReader.ReadInteger("MAIN", "RenderCarShadows", 1);
-	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 1);
+	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 0);
 
 	// General
-	EnableFakeShadowsInShop = iniReader.ReadInteger("GENERAL", "EnableFakeShadowsInShop", 0);
 	EnableFakeShadowsInCrib = iniReader.ReadInteger("GENERAL", "EnableFakeShadowsInCrib", 0);
+	EnableFakeShadowsInShop = iniReader.ReadInteger("GENERAL", "EnableFakeShadowsInShop", 0);
 
 	{
 		// Front-End Shadow Render Code
-		injector::MakeCALL(0x6E51C2, FEShadowCodeCave, true);
-		// Fixes Particle Render Speed
-		injector::MakeCALL(0x7A22E0, FEParticleSpeedCodeCave, true);
-		injector::MakeNOP(0x7A22E5, 1, true);
+		injector::MakeJMP(0x6E5186, FEShadowCodeCave, true);
+		// Fixes Car Self-Shadowing
+		injector::MakeJMP(0x74E37F, FESelfShadowingCodeCave, true);
+		injector::MakeNOP(0x74E384, 2, true);
+		// Fixes Particle Speed
+		injector::MakeJMP(0x7A22F2, FEParticleSpeedCodeCave, true);
 		// Fixes Shadows Not Rendering On Ground
 		injector::MakeJMP(0x6E0B6E, FEShadowRenderFixCodeCave, true);
 		injector::MakeNOP(0x6E0B73, 3, true);

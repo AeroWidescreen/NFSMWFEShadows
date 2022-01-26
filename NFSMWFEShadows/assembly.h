@@ -3,12 +3,14 @@
 DWORD sub_7A1FA0 = 0x7A1FA0;
 DWORD sub_7A2200 = 0x7A2200;
 DWORD sub_750980 = 0x750980;
-DWORD sub_6E0200 = 0x6E0200;
+DWORD sub_723FA0 = 0x723FA0;
+DWORD loc_6E518B = 0x6E518B;
 
 void __declspec(naked) FEShadowCodeCave()
 {
 	__asm
 	{
+		call sub_723FA0
 		cmp byte ptr ds : [0x925E90], 0x03
 		jne ExitCode // jumps if not frontend
 		cmp byte ptr ds : [0x901830], 0x00
@@ -17,77 +19,77 @@ void __declspec(naked) FEShadowCodeCave()
 		cmp eax, 0x00
 		je ExitCode
 
-	WorldShadow:
+	FE_WorldShadow:
 		cmp byte ptr ds : [RenderWorldShadows], 0x00
-		jle CarShadow // jumps if RenderWorldShadows is disabled
+		jle FE_CarShadow // jumps if RenderWorldShadows is disabled
 		push 0x04
 		mov ecx, eax
 		call sub_7A2200
-		call sub_6E0200
 
-	CarShadow:
+	FE_CarShadow:
 		cmp byte ptr ds : [RenderCarShadows], 0x00
 		jle ExitCode // jumps if RenderCarShadow is disabled
 		push 0x00
 		push 0x919C70
 		call sub_750980
 		add esp, 0x08
-		call sub_6E0200
 
 	ExitCode:
-		mov eax, dword ptr ds : [0x903320]
-		ret
+		jmp loc_6E518B
 	}
 }
 
-float ParticleSpeedDivider_1 = 1.0f;
-float ParticleSpeedDivider_2 = 2.0f;
-float ParticleSpeedDivider_3 = 3.0f;
-float ParticleSpeedResult;
+DWORD loc_74E386 = 0x74E386;
+
+void __declspec(naked) FESelfShadowingCodeCave()
+{
+	__asm
+	{
+		push eax
+		mov eax, dword ptr ds : [0x982A20]
+		mov eax, dword ptr ds : [eax + 0x04]
+		imul eax, eax, 0x70
+		mov eax, dword ptr ds : [eax + 0x9195E4]
+		cmp eax, 0x01
+		je ExitCode // jumps if not main render
+
+	FE_CarShadow:
+		cmp dword ptr ds : [0x925E90], 0x03
+		jne ExitCode // jumps if not frontend
+		mov cl, 0x00
+
+	ExitCode:
+		pop eax
+		mov dword ptr ds : [esp + 0xDC], eax
+		jmp loc_74E386
+	}
+}
+
+DWORD sub_50D320 = 0x50D320;
 
 void __declspec(naked) FEParticleSpeedCodeCave()
 {
 	__asm
 	{
-		cmp byte ptr ds : [0x901830], 0x00
-		jle OneRender // jumps if shadows are not enabled
 		push eax
-		fld dword ptr ds : [0x8FAE68]
-		fcomp dword ptr ds : [0x8FAE50]
-		fnstsw ax
-		test ah, 0x01
+		mov eax, dword ptr ds : [0x982A20]
+		mov eax, dword ptr ds : [eax + 0x04]
+		imul eax, eax, 0x70
+		mov eax, dword ptr ds : [eax + 0x9195E4]
+		cmp eax, 0x01
+		je Main
+
+	NotMain:
 		pop eax
-		jne OneRender // jumps if shadow are not enabled
+		push ecx
+		push edi
+		pop edi
+		pop ecx
+		ret 4
 
-		mov edx, 0x01
-		add dl, byte ptr ds : [RenderWorldShadows]
-		add dl, byte ptr ds : [RenderCarShadows]
-		cmp edx, 0x03
-		jge ThreeRenders
-		cmp edx, 0x02
-		je TwoRenders
-
-	OneRender:
-		fld dword ptr ds : [0x9259BC]
-		fdiv dword ptr ds : [ParticleSpeedDivider_1]
-		fstp dword ptr ds : [ParticleSpeedResult]
-		jmp ExitCode
-
-	TwoRenders:
-		fld dword ptr ds : [0x9259BC]
-		fdiv dword ptr ds : [ParticleSpeedDivider_2]
-		fstp dword ptr ds : [ParticleSpeedResult]
-		jmp ExitCode
-
-	ThreeRenders:
-		fld dword ptr ds : [0x9259BC]
-		fdiv dword ptr ds : [ParticleSpeedDivider_3]
-		fstp dword ptr ds : [ParticleSpeedResult]
-
-
-	ExitCode:
-		mov edx, dword ptr ds : [ParticleSpeedResult]
-		ret
+	Main:
+		pop eax
+		jmp sub_50D320
 	}
 }
 
