@@ -17,11 +17,7 @@ void Init()
 	// Main
 	RenderWorldShadows = iniReader.ReadInteger("MAIN", "RenderWorldShadows", 1);
 	RenderCarShadows = iniReader.ReadInteger("MAIN", "RenderCarShadows", 1);
-	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 0);
-
-	// General
-	EnableFakeShadowsInCrib = iniReader.ReadInteger("GENERAL", "EnableFakeShadowsInCrib", 0);
-	EnableFakeShadowsInShop = iniReader.ReadInteger("GENERAL", "EnableFakeShadowsInShop", 0);
+	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 0); 
 
 	{
 		// Front-End Shadow Render Code
@@ -61,7 +57,7 @@ BOOL APIENTRY DllMain(HMODULE /*hModule*/, DWORD reason, LPVOID /*lpReserved*/)
 
 		else
 		{
-			MessageBoxA(NULL, "This .exe is not supported.\nPlease use v1.3 English speed.exe (5,75 MB (6.029.312 bytes)).", "NFSMW FE Shadows by Aero_", MB_ICONERROR);
+			MessageBoxA(NULL, "This .exe is not supported.\nPlease use v1.3 English speed.exe (5.75 MB (6.029.312 bytes)).", "NFSMW FE Shadows by Aero_", MB_ICONERROR);
 			return FALSE;
 		}
 	}

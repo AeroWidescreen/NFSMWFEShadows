@@ -93,9 +93,8 @@ void __declspec(naked) FEParticleSpeedCodeCave()
 	}
 }
 
-DWORD FEShadowRenderFixCodeCaveExit1 = 0x6E0C0A;
-DWORD FEShadowRenderFixCodeCaveExit2 = 0x6E0D27;
-DWORD FEShadowRenderFixCodeCaveExit3 = 0x6E0B76;
+DWORD loc_6E0BED = 0x6E0BED;
+DWORD loc_6E0B76 = 0x6E0B76;
 
 void __declspec(naked) FEShadowRenderFixCodeCave()
 {
@@ -108,103 +107,29 @@ void __declspec(naked) FEShadowRenderFixCodeCave()
 		jle ExitCode // jumps if shadows are not enabled
 		mov eax, dword ptr ds : [ebp + 0x18]
 		mov eax, dword ptr ds : [eax]
-
-	DisableFakeShadows_CSHOP:
-		cmp byte ptr ds : [EnableFakeShadowsInShop], 0x01
-		jge DisableFakeShadows_QRACE // jumps if fake shadows are enabled
-		cmp dword ptr ds : [eax + 0x24], 0xE6D38EFF // CSHOP_SHADOWMAP
-		je ChangeRenderOrder
-
-	DisableFakeShadows_QRACE:
-		cmp byte ptr ds : [EnableFakeShadowsInCrib], 0x01
-		jge RenderFEShadows // jumps if fake shadows are enabled
-		cmp dword ptr ds : [eax + 0x24], 0x677DE90E // QRACE_SHADOWMAP
-		je ChangeRenderOrder
-		cmp dword ptr ds : [eax + 0x24], 0x573B0B00 // QRACE_SHADOWMAP2
-		je ChangeRenderOrder
-		cmp dword ptr ds : [eax + 0x24], 0x573B0B01 // QRACE_SHADOWMAP3
-		je ChangeRenderOrder
-		jmp RenderFEShadows
-
-	ChangeRenderOrder:
-		mov byte ptr ds : [eax + 0x51], 0x00
-
-	RenderFEShadows:
+		
+	RenderShadowsOnTexture:
 		pop eax
-		xor eax, eax
+		movsx eax, dl
 		mov dword ptr ds : [esi + 0x38], eax
-		mov edx, dword ptr ds : [esi + 0x24]
-		cmp edx, eax
-		je Conditional_1
-		mov edx, dword ptr ds : [edx + 0x24]
-		mov dword ptr ds : [esi + 0x38], edx
-
-	Conditional_1:
-		cmp dword ptr ds : [esi + 0x28], eax
-		je Conditional_2
-		mov edx, dword ptr ds : [esi + 0x38]
-		mov ebx, dword ptr ds : [esi + 0x28]
-		shl edx, 1
-		xor edx, dword ptr ds : [ebx + 0x24]
-		mov dword ptr ds : [esi + 0x38], edx
-
-	Conditional_2:
-		cmp dword ptr ds : [esi + 0x2C], eax
-		je Conditional_3
-		mov edx, dword ptr ds : [esi + 0x38]
-		mov ebx, dword ptr ds : [esi + 0x2C]
-		shl edx, 1
-		xor edx, dword ptr ds : [ebx + 0x24]
-		mov dword ptr ds : [esi + 0x38], edx
-
-	Conditional_3:
-		mov edx, dword ptr ds : [esi + 0x30]
-		cmp edx, eax
-		je Conditional_4
-		mov ebx, dword ptr ds : [esi + 0x38]
-		shl ebx, 1
-		xor ebx, dword ptr ds : [edx + 0x24]
-		mov dword ptr ds : [esi + 0x38] , ebx
-
-	Conditional_4:
-		cmp dword ptr ds : [esi + 0x34] , eax
-		je Conditional_5
-		mov edx, dword ptr ds : [esi + 0x38]
-		mov ebx, dword ptr ds : [esi + 0x34]
-		shl edx, 1
-		xor edx, dword ptr ds : [ebx + 0x24]
-		mov dword ptr ds : [esi + 0x38], edx
-
-	Conditional_5:
 		mov ebx, dword ptr ds : [esi + 0x38]
 		mov edx, dword ptr ds : [esi + 0x0C]
 		xor ebx, edx
 		mov edx, dword ptr ds : [0x982A20]
-		
-	// Punchthru Check
+		mov dword ptr ds : [esi + 0x38], ebx
+		// Writes Rendering Order
 		mov ebx, dword ptr ds : [ebp + 0x18]
-		mov ebx, [ebx]
-		cmp byte ptr ds : [ebx + 0x55], 0x01
-		jne IsNotPunchthru
-		mov byte ptr ds : [esi+0x3B], 0x00
-
-	IsNotPunchThru:
-		cmp dword ptr ds : [edx + 0x04], 0x01
-		mov ebx, dword ptr ds : [edi + 0x04]
-		jne loc_6E0D27
-		cmp ebx, 0x12
-		ja loc_6E0D27
-		movzx edx, byte ptr ds : [ebx + 0x6E0E04]
-		jmp FEShadowRenderFixCodeCaveExit1
-
-	loc_6E0D27:
-		jmp FEShadowRenderFixCodeCaveExit2
+		mov ebx, dword ptr ds : [ebx]
+		movzx ebx, byte ptr ds : [ebx + 0x51]
+		mov byte ptr ds : [esi + 0x3B], bl
+		// Writes Rendering Order
+		jmp loc_6E0BED
 
 	ExitCode:
 		pop eax
 		movsx eax, dl
 		or eax, 0x80000000
-		jmp FEShadowRenderFixCodeCaveExit3
+		jmp loc_6E0B76
 	}
 }
 
