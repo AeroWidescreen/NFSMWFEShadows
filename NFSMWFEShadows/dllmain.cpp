@@ -17,7 +17,7 @@ void Init()
 	// Main
 	RenderWorldShadows = iniReader.ReadInteger("MAIN", "RenderWorldShadows", 1);
 	RenderCarShadows = iniReader.ReadInteger("MAIN", "RenderCarShadows", 1);
-	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 0); 
+	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 1); 
 
 	{
 		// Front-End Shadow Render Code
