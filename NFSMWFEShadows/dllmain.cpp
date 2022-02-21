@@ -18,6 +18,7 @@ void Init()
 	RenderWorldShadows = iniReader.ReadInteger("MAIN", "RenderWorldShadows", 1);
 	RenderCarShadows = iniReader.ReadInteger("MAIN", "RenderCarShadows", 1);
 	DisableShadowsOnCars = iniReader.ReadInteger("MAIN", "DisableShadowsOnCars", 1); 
+	RestoreShadows = iniReader.ReadInteger("MAIN", "RestoreShadows", 0);
 
 	{
 		// Front-End Shadow Render Code
@@ -41,6 +42,14 @@ void Init()
 		// Disables Shadows Rendering On Cars
 		injector::MakeJMP(0x6C8323, ShadowsTransformCodeCave, true);
 		injector::MakeNOP(0x6C8328, 1, true);
+	}
+
+	if (RestoreShadows)
+	{
+		// Restores FE Shadows (Experimental)
+		injector::MakeJMP(0x6C6A2D, RestoreShadowsCodeCave, true);
+		injector::MakeCALL(0x6DABB5, ShadowShaderCodeCave, true);
+		injector::MakeNOP(0x6DABBA, 1, true);
 	}
 }
 	

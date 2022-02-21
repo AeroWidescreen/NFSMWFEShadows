@@ -190,3 +190,54 @@ void __declspec(naked) ShadowBiasCodeCave()
 		jmp ShadowBiasCodeCaveExit
 	}
 }
+
+DWORD loc_6C6A3F = 0x6C6A3F;
+DWORD loc_6C6A32 = 0x6C6A32;
+
+void __declspec(naked) RestoreShadowsCodeCave()
+{
+	__asm
+	{
+		cmp byte ptr ds : [0x925E90], 0x03
+		jne ExitCode // jumps if not frontend
+		cmp byte ptr ds : [0x901830], 0x00
+		jle ExitCode // jumps if shadows are not enabled
+		cmp dword ptr ds : [esi + 0x24] , 0x2EE02501 // QRACE_SHADOW1 : PLATFORMCRIB
+		je MakeVisible
+		cmp dword ptr ds : [esi + 0x24] , 0x1BF93EF9 // CRIB1_WINDOW2 : CAREER_SAFEHOUSE
+		je MakeVisible
+		jmp ExitCode
+
+	MakeVisible:
+		mov eax, dword ptr ds : [0x982C80]
+		cmp dword ptr ds : [eax + 0x04], edi
+		mov eax, dword ptr ds : [0x982BDC]
+		push 0x01 // push 00
+		push 0x0E
+		push eax
+		jmp loc_6C6A3F
+
+	ExitCode:
+		mov eax, dword ptr ds : [0x982C80]
+		jmp loc_6C6A32
+	}
+}
+
+void __declspec(naked) ShadowShaderCodeCave()
+{
+	__asm
+	{
+		cmp byte ptr ds : [0x925E90] , 0x03
+		jne ExitCode // jumps if not frontend
+		cmp byte ptr ds : [0x901830] , 0x00
+		jle ExitCode // jumps if shadows are not enabled
+
+	MakeVisible :
+		mov edi, dword ptr ds : [0x93DE78]
+		ret
+
+	ExitCode :
+		mov edi, dword ptr ds : [0x93DE98]
+		ret
+	}
+}

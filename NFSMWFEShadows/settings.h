@@ -4,3 +4,4 @@
 bool RenderWorldShadows;
 bool RenderCarShadows;
 bool DisableShadowsOnCars;
+bool RestoreShadows;
