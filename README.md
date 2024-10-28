@@ -46,6 +46,7 @@ A: If your mod is free and you credit me, yes.
 
 ## Credits
 [Aero_](https://github.com/AeroWidescreen) : Creator of NFSMW FE Shadows.  
+[ExOpts Team](https://github.com/ExOptsTeam) : This project is based on Extra Options and it wouldn't exist without them.  
 [Osdever](https://nfsmods.xyz/user/16) :  Discovery of front-end shadows.  
 [ThirteenAG](https://github.com/ThirteenAG/) : Ultimate-ASI-Loader.  
 
